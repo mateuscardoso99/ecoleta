@@ -14,7 +14,9 @@ para executar abra o terminal e entre na pasta server, e digite o comando: npm r
 abra um novo terminal e rode os comandos: npm run knex:seed, e o comando: npm run knex:migrate para configurar a base de dados
 
 na aplicação web, que está dentro da pasta web, é preciso rodar dentro da pasta o comando: npm start
-após isso a aplicação poderá ser acessada no navegador
+após isso a aplicação poderá ser acessada no navegador, abaixo o projeto em execução:
+
+![](20200707_183806.gif)
 
 para executar a aplicação mobile é preciso rodar o comando dentro da respectiva pasta: npm start, após isso será 
 redirecionado para o navegador, para rodar a aplicação no celular é preciso ter o aplicativo expo instalado no celular,
