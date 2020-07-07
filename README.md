@@ -21,4 +21,6 @@ após isso a aplicação poderá ser acessada no navegador, abaixo o projeto em 
 para executar a aplicação mobile é preciso rodar o comando dentro da respectiva pasta: npm start, após isso será 
 redirecionado para o navegador, para rodar a aplicação no celular é preciso ter o aplicativo expo instalado no celular,
 ele está disponível na sua loja de aplicativos, apartir daí é só apontar a câmera do celular para o QRcode 
-que aparece no navegador que a aplicação moblie será aberta dentro do expo
+que aparece no navegador que a aplicação moblie será aberta dentro do expo, abaixo o aplicativo rodando:
+
+![](20200707_184417.gif)
