@@ -1,25 +1,53 @@
-import React, { useState } from 'react'
-import { View, ImageBackground, Image, Text, StyleSheet, TextInput, KeyboardAvoidingView, Platform } from 'react-native'
+import React, { useState, useEffect } from 'react'
+import { View, ImageBackground, Image, Text, Picker, Alert, StyleSheet, TextInput, KeyboardAvoidingView, Platform, ActivityIndicator } from 'react-native'
 import { RectButton } from 'react-native-gesture-handler'
 import { Feather as Icon} from '@expo/vector-icons' //import dos icones, 'as' serve como um apelido
 import { useNavigation} from '@react-navigation/native'
+
+import axios from 'axios'
 
 const Home = () => {
 
     const navegacao = useNavigation()
 
-    const [uf, setUf] = useState('')
-    const [city, setCity] = useState('')
+    const [loading, setLoading] = useState(false)
+
+    const [uf, setUf] = useState('RS')
+    const [cities, setCities] = useState([])
+    const [selectedCity, setSelectedCity] = useState('0')
+
+    useEffect(()=>{
+        async function getCitiesFromState(){
+          setLoading(true)
+          const response = await axios.get(`https://servicodados.ibge.gov.br/api/v1/localidades/estados/${uf}/municipios`)
+          const cityNames = response.data.map(city => city.nome)
+          setCities(cityNames)
+          setLoading(false)
+        }
+        getCitiesFromState()
+    },[uf])
 
     function irParaPoints(){
+        if(selectedCity === "0"){
+          return Alert.alert('Selecione uma cidade')
+        }
         navegacao.navigate('Points', {
           uf,
-          city
+          selectedCity
         })//passando parametros para a tela Points
     }
 
+
+    if(loading){
+        return(
+            <View style={{flex:1,justifyContent:'center',alignItems:'center'}}>
+                <ActivityIndicator size="large" color="#8257E5"/>
+            </View>
+        )
+    }
+
     return(
-      <KeyboardAvoidingView style={{flex: 1}} behavior={Platform.OS === 'ios' ? 'padding' : undefined}>
+      <KeyboardAvoidingView style={{flex: 1}} behavior={Platform.OS === 'ios' ? 'padding' : 'height'}>
         <ImageBackground source={require('../../assets/home-background.png')} style={styles.container} imageStyle={{ width: 274, height: 368 }}>
             <View style={styles.main}>
                 <Image source={require('../../assets/logo.png')}/>
@@ -28,8 +56,52 @@ const Home = () => {
             </View>
 
             <View style={styles.footer}>
-                <TextInput style={styles.input} placeholder="Digite o estado" maxLength={2} autoCapitalize="characters" autoCorrect={false} value={uf} onChangeText={setUf}/>{/*autoCorrect desabilita a correção do teclado */}
-                <TextInput style={styles.input} placeholder="Digite a cidade" autoCorrect={false} value={city} onChangeText={setCity}/>
+                <Picker
+                  selectedValue={uf}
+                  onValueChange={value=>setUf(value)}
+                  style={styles.input}
+                >
+                  <Picker.Item label="Acre" value="AC"/>
+                  <Picker.Item label="Alagoas" value="AL"/>
+                  <Picker.Item label="Amapá" value="AP"/>
+                  <Picker.Item label="Amazonas" value="AM"/>
+                  <Picker.Item label="Bahia" value="BA"/>
+                  <Picker.Item label="Ceará" value="CE"/>
+                  <Picker.Item label="Distrito Federal" value="DF"/>
+                  <Picker.Item label="Espírito Santo" value="ES"/>
+                  <Picker.Item label="Goiás" value="GO"/>
+                  <Picker.Item label="Maranhão" value="MA"/>
+                  <Picker.Item label="Mato Grosso" value="MT"/>
+                  <Picker.Item label="Mato Grosso do Sul" value="MS"/>
+                  <Picker.Item label="Minas Gerais" value="MG"/>
+                  <Picker.Item label="Pará" value="PA"/>
+                  <Picker.Item label="Paraíba" value="PB"/>
+                  <Picker.Item label="Paraná" value="PR"/>
+                  <Picker.Item label="Pernambuco" value="PE"/>
+                  <Picker.Item label="Piauí" value="PI"/>
+                  <Picker.Item label="Rio de Janeiro" value="RJ"/>
+                  <Picker.Item label="Rio Grande do Norte" value="RN"/>
+                  <Picker.Item label="Rio Grande do Sul" value="RS"/>
+                  <Picker.Item label="Rondônia" value="RO"/>
+                  <Picker.Item label="Roraima" value="RR"/>
+                  <Picker.Item label="Santa Catarina" value="SC"/>
+                  <Picker.Item label="São Paulo" value="SP"/>
+                  <Picker.Item label="Sergipe" value="SE"/>
+                  <Picker.Item label="Tocantins" value="TO"/>
+                </Picker>
+
+                <Picker
+                  selectedValue={selectedCity}
+                  onValueChange={value=>setSelectedCity(value)}
+                  style={styles.input}
+                >
+                  <Picker.Item label="Selecione" value="0"/>
+                  {cities.map(city => (
+                    <Picker.Item key={city} label={city} value={city}/>
+                  ))}
+                </Picker>
+
+               {/* maxLength={2} autoCapitalize="characters" autoCorrect={false} autoCorrect desabilita a correção do teclado */}
 
                 <RectButton style={styles.button} onPress={irParaPoints}>{/*onPress, é igual ao onClick */}
                     <View style={styles.buttonIcon}>
@@ -84,7 +156,9 @@ const styles = StyleSheet.create({
       lineHeight: 24,
     },
   
-    footer: {},
+    footer: {
+      marginTop: 15
+    },
   
     select: {},
   
